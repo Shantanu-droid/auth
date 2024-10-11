@@ -1,0 +1,24 @@
+services:
+  app:
+    build: 
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app
+    entrypoint: '/app/bin/start-server.sh'
+    env_file:
+      - .env
+    depends_on:
+      - database
+  database:
+    image: postgres:17-bullseye
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+
+volumes:
+  dev-db-data:

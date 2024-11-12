@@ -7,6 +7,8 @@ services:
     volumes:
       - ./src:/app
     entrypoint: '/app/bin/start-server.sh'
+    environment:
+      - DJANGO_SECRET='django-insecure-4r$a!&5%2t*qd4g$zn=$hh&5^%q4(81#%0aw!7@at^r15h$%d_'
     env_file:
       - .env
     depends_on:

@@ -13,6 +13,29 @@ services:
       - .env
     depends_on:
       - database
+  
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: 
+      context: .
+    user: 'server-user'
+    command: celery -A core worker -l INFO
+    volumes:
+      - ./src:/app
+    depends_on:
+      - app
+      - redis
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DJANGO_SECRET='django-insecure-4r$a!&5%2t*qd4g$zn=$hh&5^%q4(81#%0aw!7@at^r15h$%d_'
+
   database:
     image: postgres:17-bullseye
     volumes:
@@ -21,6 +44,8 @@ services:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
+    ports:
+      - "5432:5432"
 
 volumes:
   dev-db-data:
